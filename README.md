@@ -24,11 +24,17 @@ tar -xvzf go1.17.4.linux-amd64.tar.gz
 vi /etc/profile
 
 将文本复制到最后一行
+
 export GO111MODULE=on
+
 export GOPROXY=https://goproxy.cn
+
 export GOROOT=/usr/local/go
+
 export GOPATH=/usr/local/go/path
+
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
 
 第五步：先按 esc 
 然后输入 :wq 
