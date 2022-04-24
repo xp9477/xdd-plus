@@ -11,7 +11,7 @@ import (
 	"github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/context"
 
-	"github.com/xp477/xdd-plus/controllers"
+	"github.com/xp9477/xdd-plus/controllers"
 	"github.com/xp9477/xdd-plus/models"
 //	"github.com/xp9477/xdd-plus/qbot"
 )
