@@ -369,57 +369,22 @@ var handleMessage = func(msgs ...interface{}) interface{} {
 						req := httplib.Post(addr + "/api/SendSMS")
 						req.Header("content-type", "application/json")
 						data, _ := req.Body(`{"Phone":"` + msg + `","qlkey":0}`).Bytes()
-						message, _ := jsonparser.GetString(data, "message")
 						success, _ := jsonparser.GetBoolean(data, "success")
-						status, _ := jsonparser.GetInt(data, "data", "status")
-						if message != "" && status != 666 {
-							sender.Reply(message)
-						}
-						i := 1
-						if !success && status == 666 && i < 5 {
-
-							sender.Reply("正在进行滑块验证...")
-							for {
-								req = httplib.Post(addr + "/api/AutoCaptcha")
-								req.Header("content-type", "application/json")
-								data, _ := req.Body(`{"Phone":"` + msg + `"}`).Bytes()
-								message, _ := jsonparser.GetString(data, "message")
-								success, _ := jsonparser.GetBoolean(data, "success")
-								status, _ := jsonparser.GetInt(data, "data", "status")
-								if !success {
-									// s.Reply("滑块验证失败：" + string(data))
-								}
-								if i > 5 {
-									sender.Reply("滑块验证失败,请联系管理员或者手动登录")
-									break
-								}
-								if status == 666 {
-									i++
-									sender.Reply(fmt.Sprintf("正在进行第%d次滑块验证...", i))
-									continue
-								}
-								if success {
-									pcodes[string(sender.UserID)] = msg
-									sender.Reply("请输入6位验证码：")
-									break
-								}
-								if strings.Contains(message, "上限") {
-									i = 6
-									sender.Reply(message)
-								}
-								// sender.Reply(message)
-							}
+						if success {
+							pcodes[string(sender.UserID)] = msg
+							sender.Reply("请输入6位验证码：")
+							break
 						} else {
-							sender.Reply("滑块失败，请网页登录")
+							sender.Reply("获取验证码失败。")
 						}
-
+						
 					}
 				}
 			}
 			// 识别登录
 			{
 				if strings.Contains(msg, "登录") || strings.Contains(msg, "登陆") {
-					var tabcount int64
+					var closetime int64
 					addr := Config.Jdcurl
 					if addr == "" {
 						return "诺兰很忙，请稍后再试。"
@@ -427,8 +392,8 @@ var handleMessage = func(msgs ...interface{}) interface{} {
 					logs.Info(addr + "/api/Config")
 					if addr != "" {
 						data, _ := httplib.Get(addr + "/api/Config").Bytes()
-						tabcount, _ = jsonparser.GetInt(data, "data", "tabcount")
-						if tabcount != 0 {
+						closetime, _ = jsonparser.GetInt(data, "data", "closetime")
+						if closetime != 0 {
 							pcodes[string(sender.UserID)] = "true"
 							sender.Reply("诺兰为您服务，请输入11位手机号：")
 						} else {
@@ -580,189 +545,7 @@ var handleMessage = func(msgs ...interface{}) interface{} {
 					}
 				}
 			}
-			// ss := regexp.MustCompile(`pin=([^;=\s]+);wskey=([^;=\s]+)`).FindAllStringSubmatch(msg, -1)
-			// if len(ss) > 0 {
-			// 	for _, s := range ss {
-			// 		wkey := "pin=" + s[1] + ";wskey=" + s[2] + ";"
-			// 		//rsp := cmd(fmt.Sprintf(`python3 test.py "%s"`, wkey), &Sender{})
-			// 		rsp, err := getKey(wkey)
-			// 		if err != nil {
-			// 			logs.Error(err)
-			// 		}
-			// 		if strings.Contains(rsp, "fake_") {
-			// 			logs.Error("wskey错误")
-			// 			sender.Reply(fmt.Sprintf("wskey错误 除京东APP皆不可用"))
-			// 		} else {
-			// 			ptKey := FetchJdCookieValue("pt_key", rsp)
-			// 			ptPin := FetchJdCookieValue("pt_pin", rsp)
-			// 			ck := JdCookie{
-			// 				PtPin: ptPin,
-			// 				PtKey: ptKey,
-			// 				WsKey: s[2],
-			// 			}
-			// 			if CookieOK(&ck) {
-			//
-			// 				if sender.IsQQ() {
-			// 					ck.QQ = sender.UserID
-			// 				} else if sender.IsTG() {
-			// 					ck.Telegram = sender.UserID
-			// 				}
-			// 				if nck, err := GetJdCookie(ck.PtPin); err == nil {
-			// 					nck.InPool(ck.PtKey)
-			// 					if nck.WsKey == "" || len(nck.WsKey) == 0 {
-			// 						if sender.IsQQ() {
-			// 							ck.Update(QQ, ck.QQ)
-			// 						}
-			// 						nck.Update(WsKey, ck.WsKey)
-			// 						msg := fmt.Sprintf("写入WsKey，并更新账号%s", ck.PtPin)
-			// 						sender.Reply(fmt.Sprintf(msg))
-			// 						(&JdCookie{}).Push(msg)
-			// 						logs.Info(msg)
-			// 					} else {
-			// 						if nck.WsKey == ck.WsKey {
-			// 							msg := fmt.Sprintf("重复写入")
-			// 							sender.Reply(fmt.Sprintf(msg))
-			// 							(&JdCookie{}).Push(msg)
-			// 							logs.Info(msg)
-			// 						} else {
-			// 							nck.Updates(JdCookie{
-			// 								WsKey: ck.WsKey,
-			// 							})
-			// 							msg := fmt.Sprintf("更新WsKey，并更新账号%s", ck.PtPin)
-			// 							sender.Reply(fmt.Sprintf(msg))
-			// 							(&JdCookie{}).Push(msg)
-			// 							logs.Info(msg)
-			// 						}
-			// 					}
-			//
-			// 				} else {
-			// 					NewJdCookie(&ck)
-			//
-			// 					msg := fmt.Sprintf("添加账号，账号名:%s", ck.PtPin)
-			//
-			// 					if sender.IsQQ() {
-			// 						ck.Update(QQ, ck.QQ)
-			// 					}
-			//
-			// 					sender.Reply(fmt.Sprintf(msg))
-			// 					sender.Reply(ck.Query())
-			// 					(&JdCookie{}).Push(msg)
-			// 				}
-			// 			}
-			// 			go func() {
-			// 				Save <- &JdCookie{}
-			// 			}()
-			// 			return nil
-			// 		}
-			// 	}
-			// }
 		}
-		// { //
-		// 	ss := regexp.MustCompile(`pt_key=([^;=\s]+);pt_pin=([^;=\s]+)`).FindAllStringSubmatch(msg, -1)
-		//
-		// 	if len(ss) > 0 {
-		//
-		// 		xyb := 0
-		// 		for _, s := range ss {
-		// 			ck := JdCookie{
-		// 				PtKey: s[1],
-		// 				PtPin: s[2],
-		// 			}
-		// 			xyb++
-		// 			if sender.IsQQ() {
-		// 				ck.QQ = sender.UserID
-		// 			} else if sender.IsTG() {
-		// 				ck.Telegram = sender.UserID
-		// 			}
-		// 			if HasKey(ck.PtKey) {
-		// 				sender.Reply(fmt.Sprintf("重复提交"))
-		// 			} else {
-		// 				if nck, err := GetJdCookie(ck.PtPin); err == nil {
-		// 					nck.InPool(ck.PtKey)
-		// 					msg := fmt.Sprintf("更新账号，%s", ck.PtPin)
-		// 					(&JdCookie{}).Push(msg)
-		// 					logs.Info(msg)
-		// 				} else {
-		// 					if Cdle {
-		// 						ck.Hack = True
-		// 					}
-		// 					NewJdCookie(&ck)
-		// 					msg := fmt.Sprintf("添加账号，%s", ck.PtPin)
-		// 					sender.Reply(fmt.Sprintf("很棒，许愿币+1，余额%d", AddCoin(sender.UserID)))
-		// 					logs.Info(msg)
-		// 				}
-		// 			}
-		//
-		// 		}
-		// 		go func() {
-		// 			Save <- &JdCookie{}
-		// 		}()
-		// 		return nil
-		// 	}
-		// }
-// 		{
-// 			// dyj
-// 			inviterId := regexp.MustCompile(`inviterId=(\S+)(&|&amp;)helpType`).FindStringSubmatch(msg)
-// 			redEnvelopeId := regexp.MustCompile(`redEnvelopeId=(\S+)(&|&amp;)inviterId`).FindStringSubmatch(msg)
-// 			if len(inviterId) > 0 && len(redEnvelopeId) > 0 {
-// 				if !sender.IsAdmin {
-// 					sender.Reply("仅管理员可用")
-// 				} else {
-// 					sender.Reply(fmt.Sprintf("大赢家开始，管理员通道"))
-// 					num, num1, f, f1 := startdyj(inviterId[1], redEnvelopeId[1], 1)
-// 					if f {
-// 						sender.Reply(fmt.Sprintf("助力完成，助力成功：%d个,火爆账号:%d个", num, num1))
-// 						if f1 {
-// 							sender.Reply("满足提现条件，开始自动提现助力")
-// 							n, i, _, f12 := startdyj(inviterId[1], redEnvelopeId[1], 2)
-// 							if f12 {
-// 								sender.Reply(fmt.Sprintf("提现助力完成，助力成功：%d个,火爆账号:%d个", n, i))
-// 							}
-// 						}
-// 					} else {
-// 						sender.Reply(fmt.Sprintf("你已经黑IP拉！，助力成功：%d个,火爆账号:%d个", num, num1))
-// 					}
-
-// 				}
-// 				return nil
-// 			}
-
-// 		}
-		// {
-		// 	// k1k
-		// 	ss := regexp.MustCompile(`launchid=(\S+)(&|&amp;)ptag`).FindStringSubmatch(msg)
-		// 	if len(ss) > 0 {
-		// 		if !sender.IsAdmin {
-		// 			sender.Reply("仅管理员可用")
-		// 		} else {
-		// 			sender.Reply(fmt.Sprintf("砍价开始，管理员通道"))
-		// 			runTask(&Task{Path: "jd_kanjia.js", Envs: []Env{
-		// 				{Name: "launchid", Value: ss[1]},
-		// 			}}, sender)
-		// 		}
-		// 		return nil
-		// 	}
-		// }
-		// { // tyt
-		// 	ss := regexp.MustCompile(`packetId=(\S+)(&|&amp;)currentActId`).FindStringSubmatch(msg)
-		// 	if len(ss) > 0 {
-		// 		if !sender.IsAdmin {
-		// 			coin := GetCoin(sender.UserID)
-		// 			if coin < Config.Tyt {
-		// 				return fmt.Sprintf("推一推需要%d个许愿币", Config.Tyt)
-		// 			}
-		// 			RemCoin(sender.UserID, Config.Tyt)
-		// 			sender.Reply(fmt.Sprintf("推一推即将开始，已扣除%d个许愿币", Config.Tyt))
-		// 		} else {
-		// 			sender.Reply(fmt.Sprintf("推一推即将开始，已扣除%d个许愿币，管理员通道", Config.Tyt))
-		// 		}
-
-		// 		runTask(&Task{Path: "jd_tyt.js", Envs: []Env{
-		// 			{Name: "tytpacketId", Value: ss[1]},
-		// 		}}, sender)
-		// 		return nil
-		// 	}
-		// }
 		{
 			if strings.Contains(msg, "pt_key") {
 				logs.Info(msg + "开始CK登录")
