@@ -405,7 +405,6 @@ var handleMessage = func(msgs ...interface{}) interface{} {
 			}
 			{
 				// 发财挖宝
-				// dyj
 				inviterId := regexp.MustCompile(`inviterId=(\S+)(&|&amp;)inviterCode`).FindStringSubmatch(msg)
 				inviterCode := regexp.MustCompile(`inviterCode=(\S+)(&|&amp;)utm_user`).FindStringSubmatch(msg)
 				if len(inviterCode) == 0 {
@@ -637,43 +636,6 @@ var handleMessage = func(msgs ...interface{}) interface{} {
 	return nil
 }
 
-// func startdyj(ine string, red string, type1 int) (num int, num1 int, f bool, f1 bool) {
-// 	k := 0
-// 	n := 0
-// 	cks := GetJdCookies()
-// 	for i := range cks {
-// 		time.Sleep(time.Second * time.Duration(5))
-// 		cookie := "pt_key=" + cks[i].PtKey + ";pt_pin=" + cks[i].PtPin + ";"
-// 		sprintf := fmt.Sprintf(`https://api.m.jd.com/client.action?functionId=openRedEnvelopeInteract&body={"linkId":"PFbUR7wtwUcQ860Sn8WRfw","redEnvelopeId":"%s","inviter":"%s","helpType":"%d"}&t=1626363029817&appid=activities_platform&clientVersion=3.5.0`, red, ine, type1)
-// 		req := httplib.Get(sprintf)
-// 		random := browser.Random()
-// 		req.Header("User-Agent", random)
-// 		req.Header("Host", "api.m.jd.com")
-// 		req.Header("Accept", "application/json, text/plain, */*")
-// 		req.Header("Connection", "keep-alive")
-// 		req.Header("Accept-Language", "zh-cn")
-// 		req.Header("Accept-Encoding", "gzip, deflate, br")
-// 		req.Header("Origin", "https://618redpacket.jd.com")
-// 		req.Header("Cookie", cookie)
-// 		data, _ := req.String()
-// 		if strings.Contains(data, "助力成功") {
-// 			logs.Info("助力成功")
-// 			k++
-// 		} else if strings.Contains(data, "火爆") {
-// 			logs.Info("火爆了")
-// 			n++
-// 		} else if strings.EqualFold(data, "") {
-// 			return i, n, false, false
-// 		} else if strings.Contains(data, "今日帮好友拆红包次数已达上限") {
-// 			logs.Info("助力上限")
-// 		} else if strings.Contains(data, "已成功提现") {
-// 			return i, n, true, true
-// 		} else {
-// 			logs.Info("要么助力过了，要么没登录")
-// 		}
-// 	}
-// 	return k, n, true, false
-// }
 
 func startfcwb(ine string, red string) (num int, num1 int, f bool) {
 	logs.Info("开始发财挖宝")

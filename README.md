@@ -3,6 +3,7 @@
 * qq机器人应该需要自己准备session.token放在xdd-plus目录下
 > https://docs.go-cqhttp.org/guide/quick_start.html#%E4%B8%8B%E8%BD%BD
 * qq机器人配置文件在qbot目录下
+* 热更新需要先 git config --global user.email "you@example.com"
 
 ## 更新日志
 ### 4-25
@@ -13,12 +14,15 @@
 xdd-plus安装教程
 
 第一步：下载go
+
 `cd /usr/local && wget https://dl.google.com/go/go1.17.4.linux-amd64.tar.gz -O go1.17.4.linux-amd64.tar.gz`
 
 第二步：解压go
+
 `tar -xvzf go1.17.4.linux-amd64.tar.gz`
 
 第三步：设置环境变量 
+
 `vi /etc/profile`
 
 将文本复制到最后一行
@@ -34,14 +38,18 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 第五步：先按 esc 然后输入 :wq 
 
 保存文件后 
+
 `source /etc/profile`
 
 第六步：检查go安装
+
 `go env`
 
 第七步：拉xdd-plus的库
+
 `cd ~ && git clone https://ghproxy.com/https://github.com/xp9477/xdd-plus.git`
 
 第八步：编译xdd-plus
+
 `cd /root/xdd-plus && go build && chmod 777 xdd-plus`
 

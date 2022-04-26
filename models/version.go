@@ -48,7 +48,7 @@ func Update(sender *Sender) error {
 	sender.Reply("小滴滴开始拉取代码")
 	rtn, err := exec.Command("sh", "-c", "cd "+ExecPath+" && git stash && git pull").Output()
 	if err != nil {
-		return errors.New("小滴滴拉取代失败：" + err.Error())
+		return errors.New("小滴滴拉取代码失败：" + err.Error())
 	}
 	t := string(rtn)
 	if !strings.Contains(t, "changed") {

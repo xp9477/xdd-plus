@@ -122,7 +122,7 @@ type UserInfoResult struct {
 }
 
 func initCookie() {
-	(&JdCookie{}).Push("开始账号检测")
+	// (&JdCookie{}).Push("开始账号检测")
 	cks := GetJdCookies()
 	for i := range cks {
 		time.Sleep(time.Second * time.Duration(Config.Later))
@@ -131,17 +131,7 @@ func initCookie() {
 			cks[i].OutPool()
 		}
 	}
-	(&JdCookie{}).Push("账号检测结束")
-	// for i := 0; i < l-1; i++ {
-	// 	if cks[i].Available == True && !CookieOK(&cks[i]) {
-	// 		if pt_key, err := cks[i].OutPool(); err == nil && pt_key != "" {
-	// 			i = i - 1
-	// 			logs.Info("正常操作")
-	// 			logs.Info(cks[i].PtPin)
-	// 			logs.Info(i)
-	// 		}
-	// 	}
-	// }
+	// (&JdCookie{}).Push("账号检测结束")
 	go func() {
 		Save <- &JdCookie{}
 	}()
@@ -180,7 +170,7 @@ func updateCookie() {
 	logs.Info(l)
 	xx := 0
 	yy := 0
-	(&JdCookie{}).Push("开始定时更新转换Wskey")
+	// (&JdCookie{}).Push("开始定时更新转换Wskey")
 	for i := range cks {
 		if len(cks[i].WsKey) > 0 {
 			time.Sleep(10 * time.Second)
@@ -223,7 +213,7 @@ func updateCookie() {
 			}
 		}
 	}
-	(&JdCookie{}).Push(fmt.Sprintf("所有CK转换完成，共%d个,转换失败个数共%d个", xx, yy))
+	(&JdCookie{}).Push(fmt.Sprintf("所有Wskey转换完成，共%d个,转换失败个数共%d个", xx, yy))
 }
 
 func CookieOK(ck *JdCookie) bool {
