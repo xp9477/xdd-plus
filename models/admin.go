@@ -387,5 +387,5 @@ func Count() string {
 		}
 	}
 	// return fmt.Sprintf("总数%d,有效%d,无效%d,今日失效%d,今日扫码%d,今日新增%d", zs, yx, wx, tl, ts, tc)
-    return fmt.Sprintf("总数%d,有效%d,无效%d,今日失效%d,今日新增%d", zs, yx, wx, tl, tc)
+    return fmt.Sprintf("总数%d,有效%d,今日新增%d", zs, yx, tc)
 }

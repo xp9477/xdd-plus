@@ -280,8 +280,8 @@ func CookieOK(ck *JdCookie) bool {
 								(&JdCookie{}).Push(msg)
 								logs.Info(msg)
 							} else {
-								// nck.Update(Available, False)
-								(&JdCookie{}).Push(fmt.Sprintf("转换失败，%s", nck.PtPin))
+								nck.Update(Available, False)
+								// (&JdCookie{}).Push(fmt.Sprintf("转换失败，%s", nck.PtPin))
 							}
 						}
 
