@@ -117,9 +117,9 @@ func (ck *JdCookie) Query() string {
 		for {
 			if end {
 				msgs = append(msgs, []string{
-					fmt.Sprintf("昨日收入：%d京豆", asset.Bean.YestodayIn),
+					fmt.Sprintf("昨日：%d", asset.Bean.YestodayIn),
 					// fmt.Sprintf("昨日支出：%d京豆", asset.Bean.YestodayOut),
-					fmt.Sprintf("今日收入：%d京豆", asset.Bean.TodayIn),
+					fmt.Sprintf("今日：%d", asset.Bean.TodayIn),
 					// fmt.Sprintf("今日支出：%d京豆", asset.Bean.TodayOut),
 				}...)
 				break
@@ -151,7 +151,7 @@ func (ck *JdCookie) Query() string {
 			}
 			page++
 		}
-		msgs = append(msgs, fmt.Sprintf("当前京豆：%v京豆", ck.BeanNum))
+		msgs = append(msgs, fmt.Sprintf("当前：%v", ck.BeanNum))
 		ysd := int(time.Now().Add(24 * time.Hour).Unix())
 		if rps := <-rpc; len(rps) != 0 {
 			for _, rp := range rps {
@@ -191,33 +191,33 @@ func (ck *JdCookie) Query() string {
 				return ""
 			}
 			msgs = append(msgs, []string{
-				fmt.Sprintf("所有红包：%.2f%s元🧧", asset.RedPacket.Total, e(asset.RedPacket.ToExpire)),
-				fmt.Sprintf("京喜红包：%.2f%s元", asset.RedPacket.Jx, e(asset.RedPacket.ToExpireJx)),
-				fmt.Sprintf("极速红包：%.2f%s元", asset.RedPacket.Js, e(asset.RedPacket.ToExpireJs)),
+				fmt.Sprintf("所有：%.2f%s", asset.RedPacket.Total, e(asset.RedPacket.ToExpire)),
+				fmt.Sprintf("京喜：%.2f%s", asset.RedPacket.Jx, e(asset.RedPacket.ToExpireJx)),
+				fmt.Sprintf("极速：%.2f%s", asset.RedPacket.Js, e(asset.RedPacket.ToExpireJs)),
 				// fmt.Sprintf("健康红包：%.2f%s元", asset.RedPacket.Jk, e(asset.RedPacket.ToExpireJk)),
-				fmt.Sprintf("京东红包：%.2f%s元", asset.RedPacket.Jd, e(asset.RedPacket.ToExpireJd)),
+				fmt.Sprintf("京东：%.2f%s", asset.RedPacket.Jd, e(asset.RedPacket.ToExpireJd)),
 			}...)
 		} else {
-			msgs = append(msgs, "暂无红包数据🧧")
+			msgs = append(msgs, "暂无数据🧧")
 		}
 		msgs = append(msgs, fmt.Sprintf("东东农场：%s", <-fruit))
 		msgs = append(msgs, fmt.Sprintf("东东萌宠：%s", <-pet))
 		gn := <-gold
-		msgs = append(msgs, fmt.Sprintf("极速金币：%d(≈%.2f元)💰", gn, float64(gn)/10000))
+		msgs = append(msgs, fmt.Sprintf("极速版：%d(≈%.2f)", gn, float64(gn)/10000))
 		zjbn := <-zjb
 		if zjbn != 0 {
-			msgs = append(msgs, fmt.Sprintf("京东赚赚：%d金币(≈%.2f元)💰", zjbn, float64(zjbn)/10000))
+			msgs = append(msgs, fmt.Sprintf("京东赚赚：%d(≈%.2f)", zjbn, float64(zjbn)/10000))
 		} else {
 			msgs = append(msgs, fmt.Sprintf("京东赚赚：暂无数据"))
 		}
 		mmcCoin := <-mmc
 		if mmcCoin != 0 {
-			msgs = append(msgs, fmt.Sprintf("京东秒杀：%d秒秒币(≈%.2f元)💰", mmcCoin, float64(mmcCoin)/1000))
+			msgs = append(msgs, fmt.Sprintf("京东秒杀：%d(≈%.2f)", mmcCoin, float64(mmcCoin)/1000))
 		} else {
 			msgs = append(msgs, fmt.Sprintf("京东秒杀：暂无数据"))
 		}
 		// msgs = append(msgs, fmt.Sprintf("推一推券：%s", <-tyt))
-		msgs = append(msgs, fmt.Sprintf("惊喜牧场：%d枚鸡蛋🥚", <-egg))
+		msgs = append(msgs, fmt.Sprintf("惊喜牧场：%d枚鸡蛋", <-egg))
 	} else {
 		msgs = append(msgs, []string{
 			"提醒：该账号已过期，请重新登录",
@@ -552,7 +552,7 @@ func initPetTown(cookie string, state chan string) {
 		if a.Result.UserStatus == 0 {
 			rt = "请手动开启活动⏰"
 		} else if a.Result.GoodsInfo.GoodsName == "" {
-			rt = "你忘了选购新的商品⏰"
+			rt = "你忘了选新的物品⏰"
 		} else if a.Result.PetStatus == 5 {
 			rt = a.Result.GoodsInfo.GoodsName + "已可领取⏰"
 		} else if a.Result.PetStatus == 6 {
@@ -740,7 +740,7 @@ func tytCoupon(cookie string, state chan string) {
 		if num == 0 {
 			rt = "无优惠券"
 		} else {
-			rt = fmt.Sprintf("%d张5元优惠券", num)
+			rt = fmt.Sprintf("%d张5优惠券", num)
 			if toexp > 0 {
 				rt += fmt.Sprintf("(今天将过期%d张)⏰", toexp)
 			} else {
