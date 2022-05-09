@@ -83,7 +83,7 @@ func (ck *JdCookie) Query1() string {
 
 func (ck *JdCookie) Query() string {
 	msgs := []string{
-		fmt.Sprintf("京东用户名：%s", ck.PtPin),
+		fmt.Sprintf("ID：%s", ck.PtPin),
 	}
 	if ck.Note != "" {
 		msgs = append(msgs, fmt.Sprintf("账号备注：%s", ck.Note))
@@ -191,7 +191,7 @@ func (ck *JdCookie) Query() string {
 				return ""
 			}
 			msgs = append(msgs, []string{
-				fmt.Sprintf("所有：%.2f%s", asset.RedPacket.Total, e(asset.RedPacket.ToExpire)),
+				fmt.Sprintf("所有🧧：%.2f%s", asset.RedPacket.Total, e(asset.RedPacket.ToExpire)),
 				fmt.Sprintf("京喜：%.2f%s", asset.RedPacket.Jx, e(asset.RedPacket.ToExpireJx)),
 				fmt.Sprintf("极速：%.2f%s", asset.RedPacket.Js, e(asset.RedPacket.ToExpireJs)),
 				// fmt.Sprintf("健康红包：%.2f%s元", asset.RedPacket.Jk, e(asset.RedPacket.ToExpireJk)),
@@ -220,7 +220,7 @@ func (ck *JdCookie) Query() string {
 		msgs = append(msgs, fmt.Sprintf("惊喜牧场：%d枚鸡蛋", <-egg))
 	} else {
 		msgs = append(msgs, []string{
-			"提醒：该账号已过期，请重新登录",
+			"提醒：已过期，请重新登录",
 		}...)
 	}
 	ck.PtPin, _ = url.QueryUnescape(ck.PtPin)
