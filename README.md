@@ -1,8 +1,5 @@
 ## 注意事项
 
-* qq机器人应该需要自己准备session.token放在xdd-plus目录下
-> https://docs.go-cqhttp.org/guide/quick_start.html#%E4%B8%8B%E8%BD%BD
-* qq机器人配置文件在qbot目录下
 * 热更新需要先 git config --global user.email "you@example.com"
 
 ## 更新日志
